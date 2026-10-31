@@ -8,7 +8,7 @@ openButton.addEventListener('click',()=>{
  openButton.disabled=true;
  openButton.innerHTML='MEMBUKA UNDANGAN <span>✦</span>';
  cover.classList.add('opened');
- if(window.openThreeScene) window.openThreeScene();
+ if(window.enterFantasyScene) window.enterFantasyScene();
  window.setTimeout(()=>{
   cover.style.transition='opacity 1s ease';
   cover.style.opacity='0';
