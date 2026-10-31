@@ -19,7 +19,19 @@ try{
  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5))});
 }catch(err){console.warn('3D scene unavailable',err);canvas.style.background='radial-gradient(ellipse at 50% 35%,#777064,#171614 55%,#050505)'}
 const params=new URLSearchParams(location.search);const guest=params.get('to');if(guest)document.querySelector('#guestName').textContent=guest;
-document.querySelector('#openInvite').addEventListener('click',()=>{opened=true;document.querySelector('#cover').style.display='none';document.querySelector('#invitation').classList.remove('hidden');window.scrollTo(0,0)});
+const openButton=document.querySelector('#openInvite');
+openButton.addEventListener('click',()=>{
+ if(openButton.disabled)return;
+ openButton.disabled=true;
+ openButton.textContent='MEMBUKA ISTANA...';
+ opened=true;
+ document.querySelector('#cover').classList.add('opening');
+ window.setTimeout(()=>{
+  document.querySelector('#cover').style.display='none';
+  document.querySelector('#invitation').classList.remove('hidden');
+  window.scrollTo(0,0);
+ },1500);
+});
 const weddingDate=new Date('2027-01-07T08:00:00+08:00');function tick(){const d=Math.max(0,weddingDate-new Date()),v=[Math.floor(d/86400000),Math.floor(d/3600000)%24,Math.floor(d/60000)%60,Math.floor(d/1000)%60];['days','hours','minutes','seconds'].forEach((id,i)=>document.getElementById(id).textContent=String(v[i]).padStart(2,'0'))}tick();setInterval(tick,1000);
 document.querySelector('#rsvpForm').addEventListener('submit',e=>{e.preventDefault();const n=document.querySelector('#rsvpName').value.trim(),a=document.querySelector('#attendance').value,c=document.querySelector('#guestCount').value,m=document.querySelector('#message').value.trim();alert('Terima kasih. Nomor WhatsApp konfirmasi akan ditambahkan setelah data kontak diberikan.')});
 
