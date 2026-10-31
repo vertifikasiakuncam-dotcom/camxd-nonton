@@ -11,8 +11,27 @@ try{
  box(40,.25,45,marble,0,-.35,-8);box(15,8,1.2,ivory,0,4,-5);box(18,.5,2,white,0,.1,-4.5);
  for(const s of [-1,1]){box(4.5,10,1.5,white,s*9,5,-5);for(let i=0;i<3;i++){let x=s*(2.8+i*2);let c=new THREE.Mesh(new THREE.CylinderGeometry(.28,.38,7.5,20),white);c.position.set(x,3.8,-3.8);scene.add(c);let cap=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.25,20),gold);cap.position.set(x,7.65,-3.8);scene.add(cap)}box(2,12,2,ivory,s*10,6,-5);let roof=new THREE.Mesh(new THREE.ConeGeometry(1.55,2.6,4),black);roof.position.set(s*10,13.2,-5);roof.rotation.y=Math.PI/4;scene.add(roof)}
  box(7,.7,1.2,white,0,8.1,-3.9);box(.65,7.5,1.2,white,-3.5,4.2,-3.9);box(.65,7.5,1.2,white,3.5,4.2,-3.9);
- const doorGeo=new THREE.BoxGeometry(3.25,6.5,.35);left=new THREE.Group();left.position.set(-3.15,3.4,-2.9);box(3.25,6.5,.35,black,1.625,0,0,left);box(.045,5.8,.04,gold,1.6,0,.22,left);let h1=new THREE.Mesh(new THREE.SphereGeometry(.12,16,12),gold);h1.position.set(2.85,-.1,.35);left.add(h1);scene.add(left);
- right=new THREE.Group();right.position.set(3.15,3.4,-2.9);box(3.25,6.5,.35,black,-1.625,0,0,right);box(.045,5.8,.04,gold,-1.6,0,.22,right);let h2=new THREE.Mesh(new THREE.SphereGeometry(.12,16,12),gold);h2.position.set(-2.85,-.1,.35);right.add(h2);scene.add(right);
+ const doorIvory=mat(0xf4efe3,.28,.12),doorGold=mat(0xc5a15e,.22,.78),doorShadow=mat(0xd7c9ad,.38,.18);
+ function makeDoor(group,hingeSide){
+  const sign=hingeSide;
+  box(3.12,6.35,.42,doorIvory,sign*1.56,0,0,group);
+  // inset raised panels and gilded borders
+  for(const y of [-2.35,0,2.2]){
+   const h=y===0?1.65:1.55;
+   box(2.48,h,.10,doorShadow,sign*1.56,y,.25,group);
+   box(2.30,h-.16,.08,doorIvory,sign*1.56,y,.32,group);
+   box(2.38,.045,.035,doorGold,sign*1.56,y+h/2,.39,group);
+   box(2.38,.045,.035,doorGold,sign*1.56,y-h/2,.39,group);
+  }
+  box(.055,5.9,.05,doorGold,sign*1.56,0,.39,group);
+  box(.055,5.9,.05,doorGold,sign*3.02,0,.39,group);
+  const med=new THREE.Mesh(new THREE.SphereGeometry(.23,24,16),doorGold);med.position.set(sign*1.56,0,.48);group.add(med);
+  const handle=new THREE.Mesh(new THREE.SphereGeometry(.105,20,16),doorGold);handle.position.set(-sign*.25,-.05,.52);group.add(handle);
+  const crest=new THREE.Mesh(new THREE.TorusGeometry(.48,.055,12,48),doorGold);crest.position.set(sign*1.56,0,.48);group.add(crest);
+  const crest2=new THREE.Mesh(new THREE.TorusGeometry(.29,.035,12,40),doorGold);crest2.position.set(sign*1.56,0,.49);group.add(crest2);
+ }
+ left=new THREE.Group();left.position.set(-3.15,3.4,-2.9);makeDoor(left,1);scene.add(left);
+ right=new THREE.Group();right.position.set(3.15,3.4,-2.9);makeDoor(right,-1);scene.add(right);
  for(let i=0;i<5;i++)box(10+i*1.5,.22,1.1,ivory,0,-.12+i*.03,1+i*1.1);
  const n=180,p=new Float32Array(n*3);for(let i=0;i<n;i++){p[i*3]=(Math.random()-.5)*18;p[i*3+1]=Math.random()*11;p[i*3+2]=(Math.random()-.5)*18-2}const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(p,3));const dust=new THREE.Points(geo,new THREE.PointsMaterial({color:0xd8bd8d,size:.045,transparent:true,opacity:.75}));scene.add(dust);
  function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime(),dt=Math.min(clock.getDelta(),.05);if(opened){left.rotation.y=THREE.MathUtils.damp(left.rotation.y,-1.12,2,dt);right.rotation.y=THREE.MathUtils.damp(right.rotation.y,1.12,2,dt)}else{left.rotation.y=Math.sin(t*.35)*.02;right.rotation.y=-Math.sin(t*.35)*.02}dust.rotation.y=t*.018;camera.position.x=Math.sin(t*.16)*.18;camera.position.y=4.2+Math.sin(t*.28)*.08;camera.lookAt(0,3,0);renderer.render(scene,camera)}animate();
