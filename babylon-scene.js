@@ -100,7 +100,7 @@
     t+=engine.getDeltaTime()*.001;
     dust.forEach((d,i)=>{d.mesh.position.y+=Math.sin(t*1.1+d.phase)*.0018;d.mesh.position.x+=Math.cos(t*.7+d.phase)*.0012;});
     glints.forEach((g,i)=>g.rotation.y+=.006);
-    if(entering){const k=Math.min(1,(performance.now()-entryStart)/3600),ease=1-Math.pow(1-k,3);camera.radius=24-7*ease;camera.target.set(0,5,-5-9*ease);camera.alpha=-Math.PI/2+Math.sin(ease*Math.PI)*.12;camera.beta=1.18-.12*ease;}
+    if(entering){const k=Math.min(1,(performance.now()-entryStart)/3600),ease=1-Math.pow(1-k,3);camera.radius=24-7*ease;camera.target.set(0,5,-5-9*ease);camera.alpha=-Math.PI/2+Math.sin(ease*Math.PI)*.12;camera.beta=1.18-.12*ease;curtainPanels.forEach(c=>{c.node.position.x=(c.side<0?-1:1)*6.2*ease;});}
   });
   engine.runRenderLoop(()=>scene.render());
   window.addEventListener("resize",()=>engine.resize());
