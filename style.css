@@ -12,3 +12,13 @@
 .scroll-hint{z-index:6;color:#f8e9c8}
 .cover.opened .cover-copy{opacity:0;pointer-events:none;transform:translate(-50%,-54%) scale(.96)}
 @media(max-width:600px){.cover-copy{width:min(86%,390px);padding:24px 14px 27px}.crest{width:66px;height:66px;font-size:29px}}
+
+/* FANTASY INTERACTIVE — Babylon.js immersive scene */
+.cover{background:#100d18}
+.cover-scene{background:radial-gradient(ellipse at 50% 45%,#51406c,#171324 68%,#090812);overflow:hidden}
+#wedding3d{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;touch-action:none;outline:0}
+.cover-copy{z-index:5}
+.cover-copy:after{content:"DRAG TO EXPLORE  ·  PINCH TO ZOOM";display:block;margin-top:15px;color:#92774f;font-size:8px;letter-spacing:.18em}
+.cover.opened .cover-copy{opacity:0;pointer-events:none}
+.scroll-hint{z-index:6;color:#f3dfb4}
+@media(max-width:600px){.cover-copy{width:min(86%,390px)}}
