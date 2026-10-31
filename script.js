@@ -22,3 +22,12 @@ const params=new URLSearchParams(location.search);const guest=params.get('to');i
 document.querySelector('#openInvite').addEventListener('click',()=>{opened=true;document.querySelector('#cover').style.display='none';document.querySelector('#invitation').classList.remove('hidden');window.scrollTo(0,0)});
 const weddingDate=new Date('2026-12-17T08:00:00+08:00');function tick(){const d=Math.max(0,weddingDate-new Date()),v=[Math.floor(d/86400000),Math.floor(d/3600000)%24,Math.floor(d/60000)%60,Math.floor(d/1000)%60];['days','hours','minutes','seconds'].forEach((id,i)=>document.getElementById(id).textContent=String(v[i]).padStart(2,'0'))}tick();setInterval(tick,1000);
 document.querySelector('#rsvpForm').addEventListener('submit',e=>{e.preventDefault();const n=document.querySelector('#rsvpName').value.trim(),a=document.querySelector('#attendance').value,c=document.querySelector('#guestCount').value,m=document.querySelector('#message').value.trim();const msg="Assalamu'alaikum, konfirmasi undangan pernikahan Aprizal Saanun & Suci Ramadani.\nNama: "+n+"\nKehadiran: "+a+"\nJumlah: "+c+"\nUcapan: "+m;window.open('https://wa.me/6282133942994?text='+encodeURIComponent(msg),'_blank','noopener')});
+
+// Premium scroll reveal: progressive enhancement, content remains visible without IntersectionObserver.
+document.querySelectorAll('#invitation .section-pad, #invitation .event-card, #invitation .couple-frame, #invitation .names-block').forEach(el=>el.classList.add('reveal'));
+if('IntersectionObserver' in window){
+ const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+  if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}
+ }),{threshold:.12,rootMargin:'0px 0px -35px 0px'});
+ document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+}else{document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'))}
