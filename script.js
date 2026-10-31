@@ -1,26 +1,28 @@
 const cover=document.getElementById('cover');
-const openButton=document.getElementById('openInvite');
 const invitation=document.getElementById('invitation');
+const openingVideo=document.getElementById('openingVideo');
 const guest=new URLSearchParams(location.search).get('to');
 if(guest)document.getElementById('guestName').textContent=guest;
-openButton.addEventListener('click',()=>{
- if(openButton.disabled)return;
- openButton.disabled=true;
- openButton.innerHTML='MEMBUKA UNDANGAN <span>✦</span>';
- cover.classList.add('opened');
- if(window.enterFantasyScene) window.enterFantasyScene();
+let invitationOpened=false;
+function openInvitation(){
+ if(invitationOpened)return;
+ invitationOpened=true;
+ cover.classList.add('finished');
  window.setTimeout(()=>{
-  cover.style.transition='opacity 1s ease';
-  cover.style.opacity='0';
-  window.setTimeout(()=>{
-   cover.style.display='none';
-   invitation.classList.remove('is-hidden');
-   window.scrollTo({top:0,behavior:'instant'});
-   document.querySelectorAll('.section').forEach(el=>el.classList.add('reveal'));
-   observeSections();
-  },950);
- },4700);
-});
+  cover.style.display='none';
+  invitation.classList.remove('is-hidden');
+  window.scrollTo({top:0,behavior:'instant'});
+  document.querySelectorAll('.section').forEach(el=>el.classList.add('reveal'));
+  observeSections();
+ },900);
+}
+if(openingVideo){
+ const fallback=window.setTimeout(openInvitation,14000);
+ openingVideo.addEventListener('ended',()=>{window.clearTimeout(fallback);openInvitation();},{once:true});
+ openingVideo.addEventListener('error',()=>{window.clearTimeout(fallback);openInvitation();},{once:true});
+ const playAttempt=openingVideo.play();
+ if(playAttempt&&typeof playAttempt.catch==='function')playAttempt.catch(()=>{window.clearTimeout(fallback);openInvitation();});
+}
 const weddingDate=new Date('2027-01-07T08:00:00+08:00');
 function updateCountdown(){
  const left=Math.max(0,weddingDate.getTime()-Date.now());
@@ -48,4 +50,4 @@ document.getElementById('rsvpForm').addEventListener('submit',event=>{
  const text='Konfirmasi kehadiran Arfan & Muzjriah\nNama: '+name+'\nKehadiran: '+attendance+'\nJumlah tamu: '+count+'\nUcapan: '+message;
  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');
 });
-document.getElementById('musicToggle').addEventListener('click',()=>alert('Musik latar akan ditambahkan setelah file lagu pilihan tersedia.'));
+
