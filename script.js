@@ -8,6 +8,7 @@ openButton.addEventListener('click',()=>{
  openButton.disabled=true;
  openButton.innerHTML='MEMBUKA UNDANGAN <span>✦</span>';
  cover.classList.add('opened');
+ if(window.openThreeScene) window.openThreeScene();
  window.setTimeout(()=>{
   cover.style.transition='opacity 1s ease';
   cover.style.opacity='0';
@@ -18,7 +19,7 @@ openButton.addEventListener('click',()=>{
    document.querySelectorAll('.section').forEach(el=>el.classList.add('reveal'));
    observeSections();
   },950);
- },2100);
+ },4700);
 });
 const weddingDate=new Date('2027-01-07T08:00:00+08:00');
 function updateCountdown(){
