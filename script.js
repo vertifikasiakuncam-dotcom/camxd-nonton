@@ -1,64 +1,204 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-const canvas=document.querySelector('#scene3d');let renderer,scene,camera,left,right,clock,opened=false;
-try{
- renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;
- scene=new THREE.Scene();scene.background=new THREE.Color(0x090909);scene.fog=new THREE.Fog(0x090909,13,38);
- camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.1,100);camera.position.set(0,4.2,17);camera.lookAt(0,3,0);clock=new THREE.Clock();
- scene.add(new THREE.HemisphereLight(0xffffff,0x39302a,2.1));const key=new THREE.DirectionalLight(0xffe5bd,3);key.position.set(-5,10,8);key.castShadow=true;scene.add(key);
- const fill=new THREE.PointLight(0xffffff,70,30);fill.position.set(0,5,-1);scene.add(fill);
- const mat=(c,r=.5,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});const ivory=mat(0xece8df,.32),white=mat(0xffffff,.25),black=mat(0x101010,.2,.35),marble=mat(0x242424,.22,.3),gold=mat(0xb89a69,.25,.75);
- function box(w,h,d,m,x,y,z,parent=scene){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
- box(40,.25,45,marble,0,-.35,-8);box(15,8,1.2,ivory,0,4,-5);box(18,.5,2,white,0,.1,-4.5);
- for(const s of [-1,1]){box(4.5,10,1.5,white,s*9,5,-5);for(let i=0;i<3;i++){let x=s*(2.8+i*2);let c=new THREE.Mesh(new THREE.CylinderGeometry(.28,.38,7.5,20),white);c.position.set(x,3.8,-3.8);scene.add(c);let cap=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.25,20),gold);cap.position.set(x,7.65,-3.8);scene.add(cap)}box(2,12,2,ivory,s*10,6,-5);let roof=new THREE.Mesh(new THREE.ConeGeometry(1.55,2.6,4),black);roof.position.set(s*10,13.2,-5);roof.rotation.y=Math.PI/4;scene.add(roof)}
- box(7,.7,1.2,white,0,8.1,-3.9);box(.65,7.5,1.2,white,-3.5,4.2,-3.9);box(.65,7.5,1.2,white,3.5,4.2,-3.9);
- const doorIvory=mat(0xf4efe3,.28,.12),doorGold=mat(0xc5a15e,.22,.78),doorShadow=mat(0xd7c9ad,.38,.18);
- function makeDoor(group,hingeSide){
-  const sign=hingeSide;
-  box(3.12,6.35,.42,doorIvory,sign*1.56,0,0,group);
-  // inset raised panels and gilded borders
-  for(const y of [-2.35,0,2.2]){
-   const h=y===0?1.65:1.55;
-   box(2.48,h,.10,doorShadow,sign*1.56,y,.25,group);
-   box(2.30,h-.16,.08,doorIvory,sign*1.56,y,.32,group);
-   box(2.38,.045,.035,doorGold,sign*1.56,y+h/2,.39,group);
-   box(2.38,.045,.035,doorGold,sign*1.56,y-h/2,.39,group);
-  }
-  box(.055,5.9,.05,doorGold,sign*1.56,0,.39,group);
-  box(.055,5.9,.05,doorGold,sign*3.02,0,.39,group);
-  const med=new THREE.Mesh(new THREE.SphereGeometry(.23,24,16),doorGold);med.position.set(sign*1.56,0,.48);group.add(med);
-  const handle=new THREE.Mesh(new THREE.SphereGeometry(.105,20,16),doorGold);handle.position.set(-sign*.25,-.05,.52);group.add(handle);
-  const crest=new THREE.Mesh(new THREE.TorusGeometry(.48,.055,12,48),doorGold);crest.position.set(sign*1.56,0,.48);group.add(crest);
-  const crest2=new THREE.Mesh(new THREE.TorusGeometry(.29,.035,12,40),doorGold);crest2.position.set(sign*1.56,0,.49);group.add(crest2);
- }
- left=new THREE.Group();left.position.set(-3.15,3.4,-2.9);makeDoor(left,1);scene.add(left);
- right=new THREE.Group();right.position.set(3.15,3.4,-2.9);makeDoor(right,-1);scene.add(right);
- for(let i=0;i<5;i++)box(10+i*1.5,.22,1.1,ivory,0,-.12+i*.03,1+i*1.1);
- const n=180,p=new Float32Array(n*3);for(let i=0;i<n;i++){p[i*3]=(Math.random()-.5)*18;p[i*3+1]=Math.random()*11;p[i*3+2]=(Math.random()-.5)*18-2}const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(p,3));const dust=new THREE.Points(geo,new THREE.PointsMaterial({color:0xd8bd8d,size:.045,transparent:true,opacity:.75}));scene.add(dust);
- function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime(),dt=Math.min(clock.getDelta(),.05);if(opened){left.rotation.y=THREE.MathUtils.damp(left.rotation.y,-1.12,2,dt);right.rotation.y=THREE.MathUtils.damp(right.rotation.y,1.12,2,dt)}else{left.rotation.y=Math.sin(t*.35)*.02;right.rotation.y=-Math.sin(t*.35)*.02}dust.rotation.y=t*.018;camera.position.x=Math.sin(t*.16)*.18;camera.position.y=4.2+Math.sin(t*.28)*.08;camera.lookAt(0,3,0);renderer.render(scene,camera)}animate();
- addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5))});
-}catch(err){console.warn('3D scene unavailable',err);canvas.style.background='radial-gradient(ellipse at 50% 35%,#777064,#171614 55%,#050505)'}
-const params=new URLSearchParams(location.search);const guest=params.get('to');if(guest)document.querySelector('#guestName').textContent=guest;
-const openButton=document.querySelector('#openInvite');
-openButton.addEventListener('click',()=>{
- if(openButton.disabled)return;
- openButton.disabled=true;
- openButton.textContent='MEMBUKA ISTANA...';
- opened=true;
- document.querySelector('#cover').classList.add('opening');
- window.setTimeout(()=>{
-  document.querySelector('#cover').style.display='none';
-  document.querySelector('#invitation').classList.remove('hidden');
-  window.scrollTo(0,0);
- },1500);
-});
-const weddingDate=new Date('2027-01-07T08:00:00+08:00');function tick(){const d=Math.max(0,weddingDate-new Date()),v=[Math.floor(d/86400000),Math.floor(d/3600000)%24,Math.floor(d/60000)%60,Math.floor(d/1000)%60];['days','hours','minutes','seconds'].forEach((id,i)=>document.getElementById(id).textContent=String(v[i]).padStart(2,'0'))}tick();setInterval(tick,1000);
-document.querySelector('#rsvpForm').addEventListener('submit',e=>{e.preventDefault();const n=document.querySelector('#rsvpName').value.trim(),a=document.querySelector('#attendance').value,c=document.querySelector('#guestCount').value,m=document.querySelector('#message').value.trim();alert('Terima kasih. Nomor WhatsApp konfirmasi akan ditambahkan setelah data kontak diberikan.')});
 
-// Premium scroll reveal: progressive enhancement, content remains visible without IntersectionObserver.
+const canvas=document.querySelector('#scene3d');
+const cover=document.querySelector('#cover');
+const invitation=document.querySelector('#invitation');
+const openButton=document.querySelector('#openInvite');
+let renderer,scene,camera,clock,leftDoor,rightDoor,doorProgress=0,opening=false,openStarted=false;
+
+try{
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+  renderer.setSize(cover.clientWidth,cover.clientHeight);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.15;
+
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x17130e);
+  scene.fog=new THREE.Fog(0x17130e,24,48);
+  camera=new THREE.PerspectiveCamera(42,cover.clientWidth/cover.clientHeight,.1,100);
+  camera.position.set(0,5.2,23);
+  camera.lookAt(0,4.1,0);
+  clock=new THREE.Clock();
+
+  const ivory=new THREE.MeshStandardMaterial({color:0xf0e8d8,roughness:.38,metalness:.08});
+  const pale=new THREE.MeshStandardMaterial({color:0xfffaf0,roughness:.3,metalness:.04});
+  const gold=new THREE.MeshStandardMaterial({color:0xb99452,roughness:.25,metalness:.78});
+  const shadow=new THREE.MeshStandardMaterial({color:0xcfc0a5,roughness:.5,metalness:.12});
+  const dark=new THREE.MeshStandardMaterial({color:0x4a3823,roughness:.35,metalness:.4});
+  const floorMat=new THREE.MeshStandardMaterial({color:0x8b8172,roughness:.3,metalness:.18});
+
+  function box(w,h,d,material,x,y,z,parent=scene){
+    const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
+    mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
+  }
+  function cylinder(rt,rb,h,material,x,y,z,parent=scene){
+    const mesh=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,32),material);
+    mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
+  }
+
+  scene.add(new THREE.HemisphereLight(0xfff5df,0x554737,2.2));
+  const sun=new THREE.DirectionalLight(0xffdfaa,3.2);sun.position.set(-7,13,12);sun.castShadow=true;scene.add(sun);
+  const glow=new THREE.PointLight(0xffd58c,95,32);glow.position.set(0,6,-5);scene.add(glow);
+  const fill=new THREE.PointLight(0xffffff,38,28);fill.position.set(0,5,9);scene.add(fill);
+
+  // Palace forecourt and a visible path beyond the doors
+  box(30,.35,38,floorMat,0,-.28,-5);
+  for(let i=0;i<6;i++)box(8+i*.8,.09,.9,pale,0,-.07,-1-i*2.2);
+  // Back courtyard: bright inner arch, fountain and garden silhouettes
+  box(12,8,.5,ivory,0,4.2,-12);
+  box(8,.18,.65,gold,0,7.8,-11.65);
+  const innerArch=new THREE.Mesh(new THREE.TorusGeometry(3.8,.22,16,64,Math.PI),gold);
+  innerArch.position.set(0,4.2,-11.55);scene.add(innerArch);
+  cylinder(.8,1.15,.35,gold,0,.15,-8.5);
+  cylinder(.48,.7,.8,pale,0,.65,-8.5);
+  const water=new THREE.Mesh(new THREE.SphereGeometry(.35,24,16),new THREE.MeshStandardMaterial({color:0xd9eff0,metalness:.4,roughness:.12}));
+  water.position.set(0,1.15,-8.5);scene.add(water);
+
+  // Main facade, columns and capitals
+  box(15,.65,1.2,pale,0,9.25,-3.8);
+  box(15,.4,1.35,gold,0,9.65,-3.8);
+  for(const x of [-6.1,6.1]){
+    box(1.15,9.3,1.25,ivory,x,4.65,-3.8);
+    cylinder(.72,.72,.48,gold,x,9.45,-3.8);
+    cylinder(.5,.5,.32,pale,x,9.85,-3.8);
+    box(1.45,.35,1.5,gold,x,10.08,-3.8);
+    for(let k=0;k<3;k++){
+      const flute=box(.055,7.7,.045,pale,x-0.3+k*.3,4.7,-3.13);
+    }
+    // ornate column base
+    box(1.65,.45,1.7,gold,x,.22,-3.8);
+    box(1.4,.35,1.5,pale,x,.58,-3.8);
+  }
+  // Architrave and decorative gold trim
+  box(10.8,.28,.55,gold,0,8.95,-3.2);
+  box(10.3,.16,.45,pale,0,8.68,-3.2);
+  // Fixed side panels frame the doors
+  box(1.25,7.25,.65,ivory,-4.55,4.05,-3.25);
+  box(1.25,7.25,.65,ivory,4.55,4.05,-3.25);
+  for(const x of [-4.55,4.55]){
+    box(1.38,.12,.78,gold,x,7.72,-2.88);
+    box(1.38,.12,.78,gold,x,.38,-2.88);
+    box(.07,6.8,.08,gold,x,4.05,-2.82);
+  }
+
+  // Two hinged, ivory-and-gold doors with raised panels
+  function makeDoor(group,side){
+    const cx=side*1.58;
+    box(3.16,6.65,.48,ivory,cx,0,0,group);
+    for(const y of [-2.15,0,2.15]){
+      const ph=1.75;
+      box(2.55,ph,.13,shadow,cx,y,.27,group);
+      box(2.36,ph-.18,.09,pale,cx,y,.36,group);
+      box(2.5,.055,.06,gold,cx,y+ph/2,.43,group);
+      box(2.5,.055,.06,gold,cx,y-ph/2,.43,group);
+      box(.055,ph,.06,gold,cx-1.25,y,.43,group);
+      box(.055,ph,.06,gold,cx+1.25,y,.43,group);
+    }
+    // central crest and ring detail
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(.48,.065,12,40),gold);
+    ring.position.set(cx,0,.53);group.add(ring);
+    const center=new THREE.Mesh(new THREE.SphereGeometry(.19,20,16),gold);
+    center.position.set(cx,0,.55);group.add(center);
+    const handle=new THREE.Mesh(new THREE.SphereGeometry(.10,18,14),dark);
+    handle.position.set(-side*.32,-.08,.56);group.add(handle);
+    box(.08,6.2,.07,gold,side*3.05,0,.45,group);
+  }
+  leftDoor=new THREE.Group();leftDoor.position.set(-3.0,4.0,-2.8);makeDoor(leftDoor,1);scene.add(leftDoor);
+  rightDoor=new THREE.Group();rightDoor.position.set(3.0,4.0,-2.8);makeDoor(rightDoor,-1);scene.add(rightDoor);
+
+  // Soft floating light particles, kept subtle
+  const count=90,positions=new Float32Array(count*3);
+  for(let i=0;i<count;i++){
+    positions[i*3]=(Math.random()-.5)*13;
+    positions[i*3+1]=Math.random()*9;
+    positions[i*3+2]=(Math.random()-.5)*13-2;
+  }
+  const particleGeometry=new THREE.BufferGeometry();
+  particleGeometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
+  const particles=new THREE.Points(particleGeometry,new THREE.PointsMaterial({color:0xffdf9e,size:.035,transparent:true,opacity:.55}));
+  scene.add(particles);
+
+  function render(){
+    requestAnimationFrame(render);
+    const dt=Math.min(clock.getDelta(),.05);
+    const elapsed=clock.elapsedTime;
+    if(opening){
+      doorProgress=Math.min(1,doorProgress+dt/2.1);
+    }
+    const eased=doorProgress*doorProgress*(3-2*doorProgress);
+    leftDoor.rotation.y=-1.22*eased;
+    rightDoor.rotation.y=1.22*eased;
+    const targetZ=opening?23-3.2*eased:23;
+    camera.position.z=THREE.MathUtils.damp(camera.position.z,targetZ,2.2,dt);
+    camera.position.y=THREE.MathUtils.damp(camera.position.y,5.2+.12*Math.sin(elapsed*.35),1.8,dt);
+    camera.lookAt(0,4.1,-1.2*eased);
+    particles.rotation.y=elapsed*.012;
+    renderer.render(scene,camera);
+    if(opening&&doorProgress>=1&&!openStarted){
+      openStarted=true;
+      window.setTimeout(()=>{
+        cover.style.transition='opacity .7s ease';
+        cover.style.opacity='0';
+        window.setTimeout(()=>{
+          cover.style.display='none';
+          invitation.classList.remove('hidden');
+          window.scrollTo(0,0);
+        },720);
+      },250);
+    }
+  }
+  render();
+
+  function resize(){
+    const w=cover.clientWidth,h=cover.clientHeight;
+    camera.aspect=w/h;camera.updateProjectionMatrix();
+    renderer.setSize(w,h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+  }
+  window.addEventListener('resize',resize);
+  if(window.ResizeObserver)new ResizeObserver(resize).observe(cover);
+}catch(error){
+  console.error('3D palace initialization failed:',error);
+  canvas.style.background='linear-gradient(180deg,#d9cdb7,#f4eee2 48%,#74614a)';
+}
+
+const params=new URLSearchParams(location.search);
+const guest=params.get('to');
+if(guest)document.querySelector('#guestName').textContent=guest;
+
+openButton.addEventListener('click',()=>{
+  if(opening)return;
+  opening=true;
+  openButton.disabled=true;
+  openButton.textContent='PINTU ISTANA TERBUKA...';
+  cover.classList.add('opening');
+});
+
+const weddingDate=new Date('2027-01-07T08:00:00+08:00');
+function tick(){
+  const d=Math.max(0,weddingDate-new Date());
+  const v=[Math.floor(d/86400000),Math.floor(d/3600000)%24,Math.floor(d/60000)%60,Math.floor(d/1000)%60];
+  ['days','hours','minutes','seconds'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=String(v[i]).padStart(2,'0');
+  });
+}
+tick();setInterval(tick,1000);
+
+document.querySelector('#rsvpForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  alert('Terima kasih. Sistem pengiriman RSVP akan diaktifkan setelah koneksi database disiapkan.');
+});
+
+// Scroll reveal
 document.querySelectorAll('#invitation .section-pad, #invitation .event-card, #invitation .couple-frame, #invitation .names-block').forEach(el=>el.classList.add('reveal'));
 if('IntersectionObserver' in window){
- const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
-  if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}
- }),{threshold:.12,rootMargin:'0px 0px -35px 0px'});
- document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
-}else{document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'))}
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target);}
+  }),{threshold:.12,rootMargin:'0px 0px -35px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+}else{
+  document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
+}
