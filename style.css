@@ -29,3 +29,31 @@
 .photo-caption{position:absolute;z-index:3;left:12px;right:12px;bottom:12px;padding:17px 8px 12px;background:linear-gradient(transparent,#20170dbb);color:#fff8e9;font-size:9px;letter-spacing:.28em;text-shadow:0 1px 4px #000}
 .couple-photo .art-chandelier,.couple-photo .groom-art,.couple-photo .bride-art,.couple-photo .art-flowers{display:none}
 @media(max-width:480px){.couple-photo{width:min(88vw,390px);aspect-ratio:4/5;margin:30px auto 14px;padding:9px}.couple-photo img{aspect-ratio:4/5}.photo-caption{bottom:9px;left:9px;right:9px}}
+
+/* STORYBOOK 04 — layered floral aisle, architectural depth and camera push */
+.wedding-aisle{perspective:900px;transform-style:preserve-3d}
+.aisle-floor{left:7%;right:7%;bottom:-15%;height:66%;clip-path:polygon(43% 0,57% 0,100% 100%,0 100%);background:linear-gradient(180deg,#fffdf4 0%,#e8d8b9 48%,#fff9e8 100%);box-shadow:0 -10px 35px #fff9e6aa}
+.aisle-floor:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#b9996544,transparent 22%,#fff9 50%,transparent 78%,#b9996544);clip-path:polygon(43% 0,57% 0,100% 100%,0 100%)}
+.aisle-floor:after{background:repeating-linear-gradient(180deg,transparent 0 10%,#fffdf0a8 10.4% 10.9%,transparent 11.4% 20%);transform:perspective(170px) rotateX(27deg);transform-origin:top}
+.floor-glint{position:absolute;top:6%;left:48%;width:4%;height:65%;background:linear-gradient(180deg,#fff,transparent);filter:blur(7px);opacity:.8}
+.aisle-arch{border-width:7px;border-color:#fffdf5;box-shadow:0 0 0 2px #c5a16b,0 0 28px #fff7d8,inset 0 0 20px #fff;filter:drop-shadow(0 5px 8px #9d805033)}
+.arch-one{width:96%;height:54%;top:18%;opacity:.46}.arch-two{width:76%;height:46%;top:23%;opacity:.34}.arch-three{width:56%;height:38%;top:29%;opacity:.25}
+.aisle-columns{position:absolute;inset:20% 3% 0;display:flex;justify-content:space-between;pointer-events:none}
+.aisle-columns i{display:block;width:clamp(9px,2.6vw,20px);height:75%;background:linear-gradient(90deg,#b79b70,#fffdf4 35%,#e4d4b8 70%,#fff);border-radius:8px 8px 0 0;box-shadow:0 0 18px #fff8,7px 0 12px #6d523522;transform:perspective(450px) rotateY(9deg)}
+.aisle-columns i:nth-child(2),.aisle-columns i:nth-child(3){height:55%;opacity:.55;margin-top:9%}
+.aisle-chandelier{top:4%;left:50%;width:100px;height:100px;transform:translateX(-50%);font-size:0;color:#fff4ce;text-shadow:0 0 16px #fff,0 0 35px #d6ad65;display:flex;align-items:center;justify-content:center;flex-direction:column;filter:drop-shadow(0 4px 8px #8b6b37aa)}
+.aisle-chandelier:before{content:"";position:absolute;top:-10px;width:2px;height:30px;background:linear-gradient(#b99452,#fff1c9)}
+.aisle-chandelier b{font-size:42px;line-height:1}.aisle-chandelier span{font-size:27px;margin-top:-7px}.aisle-chandelier i{display:block;width:55px;height:12px;border:2px solid #c4a061;border-radius:50%;box-shadow:0 0 15px #fff}
+.aisle-flowers{position:absolute;bottom:14%;z-index:2;width:23%;height:29%;font-size:clamp(30px,8vw,58px);line-height:.8;color:#fffdf6;text-shadow:0 2px 8px #9d835b,0 0 16px #fff;filter:drop-shadow(0 8px 8px #75552b55)}
+.aisle-flowers small{display:block;font-size:.65em;letter-spacing:-.12em;margin-top:-4px}
+.flower-left{left:1%;transform:rotate(-12deg)}.flower-right{right:1%;transform:scaleX(-1) rotate(-12deg)}
+.aisle-candles{position:absolute;bottom:11%;left:0;right:0;display:flex;justify-content:space-around;opacity:.7}
+.aisle-candles i{width:5px;height:38px;background:linear-gradient(90deg,#b08a4b,#fff4d7,#d4b77e);border-radius:3px;box-shadow:0 0 13px #fff,0 -8px 13px #ffe3a0}
+.cover.opened .wedding-aisle{animation:cameraDolly 2.1s cubic-bezier(.2,.7,.2,1) both;transform-origin:50% 55%}
+.cover.opened .aisle-floor{animation:floorRush 2.1s ease both}
+.cover.opened .aisle-columns{animation:columnRush 2.1s ease both}
+@keyframes cameraDolly{0%{transform:scale(1);filter:brightness(1)}55%{filter:brightness(1.12)}100%{transform:scale(1.18);filter:brightness(1.18)}}
+@keyframes floorRush{to{transform:scaleY(1.16);transform-origin:bottom}}
+@keyframes columnRush{to{transform:translateZ(35px) scale(1.06)}}
+@media(max-width:600px){.aisle-floor{left:1%;right:1%;height:64%;bottom:-12%}.aisle-flowers{bottom:12%;width:26%;height:25%}.aisle-columns{inset:23% 1% 0}.aisle-columns i{height:65%}.aisle-columns i:nth-child(2),.aisle-columns i:nth-child(3){height:47%;margin-top:10%}.aisle-chandelier{top:5%;transform:translateX(-50%) scale(.78)}.arch-one{width:100%;height:48%;top:22%}.arch-two{width:82%;height:41%;top:27%}.arch-three{width:62%;height:34%;top:32%}}
+@media(prefers-reduced-motion:reduce){.cover.opened .wedding-aisle,.cover.opened .aisle-floor,.cover.opened .aisle-columns{animation:none}}
