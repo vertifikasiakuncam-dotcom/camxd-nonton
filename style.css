@@ -20,3 +20,12 @@
 @keyframes aisleReveal{from{opacity:0;transform:translateX(-50%) scale(.78)}to{opacity:.42;transform:translateX(-50%) scale(1)}}
 @media(max-width:600px){.aisle-floor{left:8%;right:8%;height:55%}.aisle-chandelier{top:7%;font-size:30px}.arch-one{width:86%;height:46%;top:22%}.arch-two{width:68%;height:38%;top:27%}.arch-three{width:48%;height:30%;top:32%}}
 @media(prefers-reduced-motion:reduce){.cover.opened .aisle-arch{animation:none}}
+
+/* STORYBOOK 03 — replace toy-like CSS characters with the couple's real portrait */
+.couple-photo{height:auto;aspect-ratio:4/5;max-width:430px;min-height:0;border-radius:46% 46% 8px 8px;padding:12px;background:linear-gradient(145deg,#fffdf7,#d9bd86 55%,#fffaf0);box-shadow:0 18px 45px #72532b2b,inset 0 0 0 1px #fff}
+.couple-photo:before{content:"";position:absolute;inset:7px;border:1px solid #c8a66b;border-radius:inherit;z-index:2;pointer-events:none}
+.couple-photo img{display:block;width:100%;height:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 42%;border-radius:44% 44% 4px 4px;box-shadow:0 6px 18px #5b432533}
+.couple-photo .art-arch{inset:18px 20px 0;border-width:2px;z-index:1;pointer-events:none}
+.photo-caption{position:absolute;z-index:3;left:12px;right:12px;bottom:12px;padding:17px 8px 12px;background:linear-gradient(transparent,#20170dbb);color:#fff8e9;font-size:9px;letter-spacing:.28em;text-shadow:0 1px 4px #000}
+.couple-photo .art-chandelier,.couple-photo .groom-art,.couple-photo .bride-art,.couple-photo .art-flowers{display:none}
+@media(max-width:480px){.couple-photo{width:min(88vw,390px);aspect-ratio:4/5;margin:30px auto 14px;padding:9px}.couple-photo img{aspect-ratio:4/5}.photo-caption{bottom:9px;left:9px;right:9px}}
