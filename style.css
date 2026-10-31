@@ -65,3 +65,6 @@ footer{border-top:1px solid #b99a6844;letter-spacing:.28em}
 .reveal.visible{opacity:1;transform:translateY(0)}
 @media(min-width:700px){.section-pad{padding:8rem 3rem}.event-grid{gap:1.5rem}.photo-placeholder,.photo-placeholder img{min-height:500px}.gallery-placeholder.tall{min-height:500px}}
 @media(max-width:600px){.section-pad{padding:5.2rem 1.1rem}.photo-placeholder,.photo-placeholder img{min-height:260px}.cover:before{inset:2vh 3vw}.rsvp form{padding:1.2rem}.hero:before,.event:before,.rsvp:before{inset:10px}}
+
+/* Single shared portrait photo for Arfan & Muzjriah */
+.couple-frame.couple-single{display:block;max-width:560px;padding:12px}.couple-single .photo-placeholder{min-height:0;aspect-ratio:4/5}.couple-single .photo-placeholder img{width:100%;height:100%;min-height:0;object-fit:cover;object-position:center 35%}.couple-single .photo-placeholder span{font-size:.65rem;letter-spacing:.2em}
